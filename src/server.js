@@ -81,6 +81,7 @@ app.post('/status', (req,res) => {
                 participants[i].lastStatus = now.toLocaleTimeString();
             }
         }
+        res.sendStatus(200);
     }
     else {
         res.sendStatus(400);
