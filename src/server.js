@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import Joi from 'joi';
-
+import { stripHtml } from "string-strip-html";
 
 
 const port = 4000;
@@ -33,8 +33,8 @@ app.post('/participants', (req,res) => {
     const now = new Date();
     const participantsNames = participants.map(p => p.name);
     if(!error && !participantsNames.includes(participant.name)){
-        participants.push({...participant, lastStatus: now.toLocaleTimeString()});
-        messages.push({from: participant.name, to: 'Todos', text: 'entra na sala...', type: 'status', time: now.toLocaleTimeString()})
+        participants.push({name: participant.name.trim(), lastStatus: now.toLocaleTimeString()});
+        messages.push({from: stripHtml(participant.name.trim()).result, to: 'Todos', text: 'entra na sala...', type: 'status', time: now.toLocaleTimeString()})
         res.sendStatus(200);
     }
     else{
@@ -63,7 +63,7 @@ app.post('/messages', (req,res) => {
     const now = new Date();
     const participantsNames = participants.map(p => p.name);
     if(!error && participantsNames.includes(from)){
-        messages.push({from: from , to: message.to, text: message.text, type: message.type, time: now.toLocaleTimeString()});
+        messages.push({from: from , to: message.to, text: stripHtml(message.text.trim()).result, type: message.type, time: now.toLocaleTimeString()});
         res.sendStatus(200);
     }
     else{
